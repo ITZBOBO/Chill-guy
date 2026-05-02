@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ITZBOBO — The Chill Dev</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #f5f0e8;
+      --warm: #e8dfc8;
+      --tan: #c9b99a;
+      --brown: #7a5c3e;
+      --espresso: #3e2a1a;
+      --sage: #8a9e7a;
+      --rust: #b05a2f;
+      --mist: #d4cfc8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--cream);
+      color: var(--espresso);
+      font-family: 'DM Mono', monospace;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    .cursor {
+      position: fixed;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--rust);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.15s ease, width 0.2s, height 0.2s, opacity 0.2s;
+      mix-blend-mode: multiply;
+    }
+    .cursor.big { width: 48px; height: 48px; opacity: 0.3; }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+      background-size: 200px;
+      pointer-events: none;
+      z-index: 9998;
+      opacity: 0.6;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 60px 24px;
+    }
+
+    .hero-badge {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--rust);
+      border: 1px solid var(--tan);
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(4rem, 14vw, 10rem);
+      font-weight: 700;
+      line-height: 0.92;
+      text-align: center;
+      color: var(--espresso);
+      animation: fadeUp 1s ease 0.1s both;
+    }
+    .hero-title em { font-style: italic; color: var(--rust); }
+
+    .guy-wrap {
+      position: relative;
+      margin: 52px 0 40px;
+      animation: fadeUp 1s ease 0.25s both;
+    }
+
+    .guy {
+      position: relative;
+      width: 140px;
+      height: 210px;
+      margin: 0 auto;
+    }
+
+    .guy-body {
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 78px; height: 130px;
+      background: #6b7a5e;
+      border-radius: 18px 18px 4px 4px;
+    }
+    .guy-body::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 26px; height: 18px;
+      background: var(--cream);
+      border-radius: 0 0 12px 12px;
+    }
+    .guy-legs {
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 76px; height: 62px;
+      background: #3b5278;
+      border-radius: 0 0 6px 6px;
+    }
+    .guy-legs::before, .guy-legs::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      width: 32px; height: 58px;
+      background: #2e4260;
+      border-radius: 0 0 8px 8px;
+    }
+    .guy-legs::before { left: 2px; }
+    .guy-legs::after  { right: 2px; }
+
+    .guy-shoe-l, .guy-shoe-r {
+      position: absolute;
+      bottom: 0;
+      width: 36px; height: 14px;
+      background: var(--espresso);
+      border-radius: 4px 12px 4px 4px;
+    }
+    .guy-shoe-l { left: 19px; }
+    .guy-shoe-r { right: 19px; }
+
+    .guy-arm-l, .guy-arm-r {
+      position: absolute;
+      top: 80px;
+      width: 18px; height: 62px;
+      background: #6b7a5e;
+      border-radius: 9px;
+    }
+    .guy-arm-l { left: 6px; transform: rotate(12deg); transform-origin: top center; }
+    .guy-arm-r { right: 6px; transform: rotate(-12deg); transform-origin: top center; }
+    .guy-arm-l::after, .guy-arm-r::after {
+      content: '';
+      position: absolute;
+      bottom: -6px; left: 50%;
+      transform: translateX(-50%);
+      width: 20px; height: 16px;
+      background: #c49a6c;
+      border-radius: 50% 50% 40% 40%;
+    }
+
+    .guy-head {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 80px; height: 78px;
+      background: #c49a6c;
+      border-radius: 50% 50% 42% 42%;
+      animation: headbob 4s ease-in-out infinite;
+    }
+    @keyframes headbob {
+      0%, 100% { transform: translateX(-50%) rotate(-1.5deg); }
+      50%       { transform: translateX(-50%) rotate(1.5deg); }
+    }
+    .guy-head::before, .guy-head::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      width: 22px; height: 22px;
+      background: #c49a6c;
+      border-radius: 50%;
+    }
+    .guy-head::before { left: 4px; }
+    .guy-head::after  { right: 4px; }
+
+    .ear-l, .ear-r {
+      position: absolute;
+      top: -4px;
+      width: 14px; height: 14px;
+      background: #e8b8a0;
+      border-radius: 50%;
+      z-index: 2;
+    }
+    .ear-l { left: 8px; }
+    .ear-r { right: 8px; }
+
+    .guy-eye-l, .guy-eye-r {
+      position: absolute;
+      top: 32px;
+      width: 10px; height: 5px;
+      background: var(--espresso);
+      border-radius: 0 0 8px 8px;
+    }
+    .guy-eye-l { left: 18px; }
+    .guy-eye-r { right: 18px; }
+
+    .guy-snout {
+      position: absolute;
+      top: 44px; left: 50%;
+      transform: translateX(-50%);
+      width: 30px; height: 20px;
+      background: #e8b8a0;
+      border-radius: 50%;
+    }
+    .guy-snout::after {
+      content: '';
+      position: absolute;
+      top: 4px; left: 50%;
+      transform: translateX(-50%);
+      width: 12px; height: 8px;
+      background: #b07060;
+      border-radius: 50% 50% 40% 40%;
+    }
+
+    .guy-shadow {
+      width: 90px; height: 14px;
+      background: var(--tan);
+      border-radius: 50%;
+      margin: 0 auto;
+      filter: blur(4px);
+      opacity: 0.5;
+      animation: shadowpulse 4s ease-in-out infinite;
+    }
+    @keyframes shadowpulse {
+      0%, 100% { transform: scaleX(0.95); opacity: 0.45; }
+      50%       { transform: scaleX(1.05); opacity: 0.55; }
+    }
+
+    .hero-name {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(0.85rem, 2vw, 1rem);
+      color: var(--brown);
+      margin-bottom: 10px;
+      animation: fadeUp 1s ease 0.35s both;
+    }
+
+    .hero-sub {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: var(--brown);
+      text-align: center;
+      max-width: 480px;
+      line-height: 1.6;
+      animation: fadeUp 1s ease 0.4s both;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px; left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--tan);
+      animation: fadeUp 1s ease 1s both;
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: var(--tan);
+      animation: grow 2s ease-in-out infinite;
+    }
+    @keyframes grow {
+      0%   { transform: scaleY(0); transform-origin: top; }
+      50%  { transform: scaleY(1); transform-origin: top; }
+      51%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-wrap {
+      border-top: 1px solid var(--warm);
+      border-bottom: 1px solid var(--warm);
+      overflow: hidden;
+      padding: 20px 0;
+    }
+    .marquee {
+      display: flex;
+      animation: scroll 24s linear infinite;
+      white-space: nowrap;
+    }
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding: 0 32px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--brown);
+      flex-shrink: 0;
+    }
+    .marquee-dot { width: 6px; height: 6px; background: var(--rust); border-radius: 50%; flex-shrink: 0; }
+    @keyframes scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── SECTIONS ── */
+    .section-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--tan);
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--warm);
+    }
+
+    /* ── ABOUT ── */
+    .about {
+      padding: 100px 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+    @media (max-width: 600px) { .about-grid { grid-template-columns: 1fr; } }
+
+    .about-block {
+      background: var(--warm);
+      padding: 40px 32px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease, background 0.3s;
+    }
+    .about-block.visible { opacity: 1; transform: translateY(0); }
+    .about-block:hover { background: var(--tan); }
+
+    .about-block-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 16px;
+    }
+    .about-block-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      line-height: 1.65;
+      color: var(--espresso);
+    }
+
+    /* ── TRAITS ── */
+    .traits {
+      padding: 0 24px 100px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .trait-list { list-style: none; }
+    .trait-item {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--warm);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .trait-item.visible { opacity: 1; transform: translateY(0); }
+    .trait-num { font-size: 0.65rem; color: var(--tan); min-width: 28px; letter-spacing: 0.1em; }
+    .trait-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-weight: 400;
+      color: var(--espresso);
+      line-height: 1.2;
+    }
+    .trait-tag {
+      margin-left: auto;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--rust);
+      white-space: nowrap;
+    }
+
+    /* ── STACK ── */
+    .dark {
+      background: var(--espresso);
+      color: var(--cream);
+      padding: 100px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .dark::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, #5a3e28 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 50%, #2a3e28 0%, transparent 60%);
+      opacity: 0.6;
+    }
+    .dark-inner { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; }
+
+    .dark-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      margin-bottom: 16px;
+    }
+    .dark-title span { color: var(--sage); }
+
+    .dark-sub {
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: var(--mist);
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+
+    .stack-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 36px;
+    }
+    .chip {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 8px 18px;
+      border-radius: 100px;
+      color: var(--mist);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .chip:hover { background: var(--rust); color: var(--cream); border-color: var(--rust); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 60px 24px 40px;
+      text-align: center;
+      border-top: 1px solid var(--warm);
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--espresso);
+      margin-bottom: 16px;
+    }
+    .footer-logo em { font-style: italic; color: var(--rust); }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+    .footer-links a {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--brown);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--rust); }
+    .footer-sub {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--tan);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">developer · builder · chill guy</div>
+    <h1 class="hero-title"><em>ITZ</em><br/>BOBO</h1>
+
+    <div class="guy-wrap">
+      <div class="guy">
+        <div class="ear-l"></div>
+        <div class="ear-r"></div>
+        <div class="guy-head">
+          <div class="guy-eye-l"></div>
+          <div class="guy-eye-r"></div>
+          <div class="guy-snout"></div>
+        </div>
+        <div class="guy-arm-l"></div>
+        <div class="guy-arm-r"></div>
+        <div class="guy-body"></div>
+        <div class="guy-legs">
+          <div class="guy-shoe-l"></div>
+          <div class="guy-shoe-r"></div>
+        </div>
+      </div>
+      <div class="guy-shadow"></div>
+    </div>
+
+    <p class="hero-name">Agboola Enoch Aduragbemi</p>
+    <p class="hero-sub">Full-stack developer from Nigeria. Ships clean code and even cleaner vibes.</p>
+
+    <div class="scroll-hint">
+      <span>scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee">
+      <div class="marquee-item"><span>Building things that matter</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>Final year. Still chill.</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>ITZBOBO on GitHub</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>Frontend. Full-stack. Whatever it takes.</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>Dark mode by default</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>We ship. We chill. We repeat.</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>Redeemer's University Nigeria</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>Building things that matter</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>Final year. Still chill.</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>ITZBOBO on GitHub</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>Frontend. Full-stack. Whatever it takes.</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>Dark mode by default</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>We ship. We chill. We repeat.</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>Redeemer's University Nigeria</span><div class="marquee-dot"></div></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="about">
+    <div class="section-label">Who is this guy</div>
+    <div class="about-grid">
+      <div class="about-block">
+        <div class="about-block-label">The person</div>
+        <p class="about-block-text">21-year-old Computer Science student, final year at Redeemer's University Nigeria. Chill by nature, thorough by practice.</p>
+      </div>
+      <div class="about-block">
+        <div class="about-block-label">The craft</div>
+        <p class="about-block-text">Frontend and full-stack developer. Obsessed with UI aesthetics, dark themes, and building products that actually feel good to use.</p>
+      </div>
+      <div class="about-block">
+        <div class="about-block-label">The approach</div>
+        <p class="about-block-text">Ships clean, readable code. No unnecessary drama. Just well-structured components and commits that make sense.</p>
+      </div>
+      <div class="about-block">
+        <div class="about-block-label">Currently</div>
+        <p class="about-block-text">Finishing my final year project, building RepoPilot — an AI-powered GitHub SaaS — and stacking portfolio pieces one push at a time.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRAITS -->
+  <section class="traits">
+    <div class="section-label">Traits</div>
+    <ul class="trait-list">
+      <li class="trait-item"><span class="trait-num">01</span><span class="trait-text">Builds UIs that people actually enjoy using.</span><span class="trait-tag">design</span></li>
+      <li class="trait-item"><span class="trait-num">02</span><span class="trait-text">Stays calm when the deadline moves up.</span><span class="trait-tag">mindset</span></li>
+      <li class="trait-item"><span class="trait-num">03</span><span class="trait-text">Turns complex ideas into clean, working products.</span><span class="trait-tag">execution</span></li>
+      <li class="trait-item"><span class="trait-num">04</span><span class="trait-text">Dark glassmorphism? Yes. Always yes.</span><span class="trait-tag">taste</span></li>
+      <li class="trait-item"><span class="trait-num">05</span><span class="trait-text">Commits frequently. Documents properly. Chill throughout.</span><span class="trait-tag">discipline</span></li>
+    </ul>
+  </section>
+
+  <!-- STACK -->
+  <section class="dark">
+    <div class="dark-inner">
+      <p class="section-label" style="color:var(--mist); justify-content:center; margin-bottom:24px;">The Stack</p>
+      <h2 class="dark-title">Tools of a<br/><span>Chill</span> Dev</h2>
+      <p class="dark-sub">Not chasing trends. Just using what ships great products.</p>
+      <div class="stack-chips">
+        <span class="chip">Next.js</span>
+        <span class="chip">TypeScript</span>
+        <span class="chip">Tailwind CSS</span>
+        <span class="chip">React</span>
+        <span class="chip">Prisma</span>
+        <span class="chip">PostgreSQL</span>
+        <span class="chip">Supabase</span>
+        <span class="chip">Node.js</span>
+        <span class="chip">Express</span>
+        <span class="chip">Vercel</span>
+        <span class="chip">Claude AI</span>
+        <span class="chip">Git</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo"><em>ITZ</em>BOBO</div>
+    <div class="footer-links">
+      <a href="https://github.com/ITZBOBO" target="_blank">GitHub</a>
+      <a href="https://linkedin.com" target="_blank">LinkedIn</a>
+    </div>
+    <p class="footer-sub">built chill · shipped clean · always vibing</p>
+  </footer>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, .about-block, .trait-item, .chip').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('big'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('big'));
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const delay = el.dataset.delay || 0;
+          setTimeout(() => el.classList.add('visible'), +delay);
+          observer.unobserve(el);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.about-block').forEach((el, i) => {
+      el.dataset.delay = i * 100;
+      observer.observe(el);
+    });
+
+    document.querySelectorAll('.trait-item').forEach((el, i) => {
+      el.dataset.delay = i * 80;
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
